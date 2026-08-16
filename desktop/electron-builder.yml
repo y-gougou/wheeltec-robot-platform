@@ -1,0 +1,67 @@
+appId: com.YP.telemetry-dashboard
+productName: YP Console
+copyright: Copyright 2026 YP Robotics Co., Ltd.
+
+directories:
+  output: dist
+  buildResources: assets
+
+files:
+  - main.js
+  - preload.js
+  - inference-service.js
+  - model-converter-service.js
+  - db/**/*
+  - renderer/**/*
+  - assets/**/*
+  - app-config.json
+  - package.json
+
+extraResources:
+  - from: build/release
+    to: release
+    filter:
+      - "**/*"
+  - from: inference/tools
+    to: inference/tools
+    filter:
+      - "**/*"
+      - "!**/__pycache__/**"
+      - "!**/*.pyc"
+  - from: python
+    to: python
+    filter:
+      - "**/*"
+  - from: inference/onnxruntime/build
+    to: inference
+    filter:
+      - yp_fault_infer*
+      - onnxruntime*.dll
+      - libonnxruntime*.so*
+  - from: models
+    to: models
+    filter:
+      - "**/*"
+      - "!**/__pycache__/**"
+      - "!**/*.pyc"
+
+win:
+  target: nsis
+  icon: assets/icon.ico
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: assets/icon.ico
+  uninstallerIcon: assets/icon.ico
+
+linux:
+  target: AppImage
+  icon: assets/icon.png
+  category: Utility
+  synopsis: ROS Telemetry Dashboard
+  description: Read-only telemetry monitoring for YP ROS robots
+
+mac:
+  target: dmg
+  category: public.app-category.utilities

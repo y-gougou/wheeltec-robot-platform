@@ -1,0 +1,16 @@
+{
+  "version": "1.1.0",
+  "displayName": "YP Console",
+  "displayName_zh": "YP 控制台",
+  "packageName": "YP-telemetry-dashboard",
+  "appId": "com.YP.telemetry-dashboard",
+  "author": "YP",
+  "copyright": "Copyright 2026 YP Robotics Co., Ltd.",
+  "description": "VS Code-style ROS telemetry dashboard for YP robots",
+  "description_linux": "Read-only telemetry monitoring for YP ROS robots",
+  "icon": "assets/icon.ico",
+  "icon_linux": "assets/icon.png",
+  "installerIcon": "assets/icon.ico",
+  "uninstallerIcon": "assets/icon.ico",
+  "background": "assets/background.png"
+}

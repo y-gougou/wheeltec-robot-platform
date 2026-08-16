@@ -1,0 +1,21 @@
+{
+  "name": "SAGE-CNN selected",
+  "backend": "onnxruntime",
+  "model_path": "sage_cnn_selected_best_model.onnx",
+  "scaler_path": "scaler.json",
+  "feature_config_path": "feature_config_used.json",
+  "input_shape": [
+    1,
+    15,
+    50
+  ],
+  "labels": [
+    "normal",
+    "wheel_slip",
+    "drive_abnormal",
+    "shaft_eccentricity"
+  ],
+  "runtime_options": {
+    "prefer_cuda": true
+  }
+}

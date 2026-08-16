@@ -1,0 +1,39 @@
+{
+  "features": [
+    "odom_vx",
+    "odom_vy",
+    "odom_wz",
+    "wheel_speed0",
+    "wheel_speed1",
+    "wheel_speed2",
+    "imu_ax",
+    "imu_ay",
+    "imu_az",
+    "imu_gx",
+    "imu_gy",
+    "imu_gz",
+    "current0",
+    "current1",
+    "current2"
+  ],
+  "num_features": 15,
+  "window_size": 50,
+  "step_size": 10,
+  "scaler": "standard",
+  "num_classes": 4,
+  "label_map": {
+    "normal": 0,
+    "wheel_slip": 1,
+    "drive_abnormal": 2,
+    "shaft_eccentricity": 3
+  },
+  "input_shape": [
+    15,
+    50
+  ],
+  "input_layout": "channel,time",
+  "source_results": "results_deployment_robust/checkpoints/sage_no_saf/run_03",
+  "selected_model": "sage_no_saf",
+  "selected_run": 3,
+  "note": "Switched from full SAGE-CNN to SAGE-CNN w/o SAF for deployment robustness. Although SAF shows comparable performance on in-distribution data, ablation experiments and cross-speed deployment results indicate that removing SAF improves generalization stability (deployment_robust test macro_f1: 0.9344 vs 0.9283). Label order follows the trained model logits: normal, wheel_slip, drive_abnormal, shaft_eccentricity."
+}

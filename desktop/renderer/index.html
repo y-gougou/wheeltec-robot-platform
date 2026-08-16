@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data: file:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ws://*:* wss://*:* http://*:*;" />
+  <title>YP Console</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══ Title Bar ═══ -->
+  <header id="titlebar">
+    <span class="titlebar-title" data-i18n="title">YP Console</span>
+    <div class="titlebar-actions">
+      <button id="btn-theme" class="titlebar-btn" title="Toggle theme" aria-label="Toggle theme">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <button id="btn-lang" class="titlebar-btn" title="Switch language">EN</button>
+      <div class="window-controls">
+        <button id="btn-minimize" class="win-ctrl" aria-label="Minimize">
+          <svg width="10" height="10" viewBox="0 0 10 1"><rect width="10" height="1" fill="currentColor"/></svg>
+        </button>
+        <button id="btn-maximize" class="win-ctrl" aria-label="Maximize">
+          <svg width="10" height="10" viewBox="0 0 10 10"><rect x="0.5" y="0.5" width="9" height="9" rx="0.5" fill="none" stroke="currentColor"/></svg>
+        </button>
+        <button id="btn-close" class="win-ctrl win-close" aria-label="Close">
+          <svg width="10" height="10" viewBox="0 0 10 10"><line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.2"/><line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ Workbench ═══ -->
+  <div class="workbench">
+
+    <!-- ═══ Activity Bar ═══ -->
+    <nav id="activitybar">
+      <button class="activity-btn active" data-view="dashboard" title="Dashboard" aria-label="Dashboard">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </button>
+      <button class="activity-btn" data-view="drive" title="Drive" aria-label="Drive">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/>
+          <line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/>
+          <line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/>
+          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="18.36" y2="18.36"/>
+          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="18.36" y2="5.64"/>
+        </svg>
+      </button>
+      <button class="activity-btn" data-view="charts" title="Charts" aria-label="Charts">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3,20 7,12 11,16 15,6 19,10 21,8"/>
+        </svg>
+      </button>
+      <button class="activity-btn" data-view="collect" title="Collect" aria-label="Collect">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </button>
+      <button class="activity-btn" data-view="experiment" title="Experiment" aria-label="Experiment">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 3h6v4l4 8H5l4-8z"/><line x1="5" y1="19" x2="19" y2="19"/>
+          <line x1="12" y1="12" x2="12" y2="16"/>
+        </svg>
+      </button>
+      <button class="activity-btn" data-view="settings" title="Settings" aria-label="Settings">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </nav>
+
+    <!-- ═══ Sidebar ═══ -->
+    <aside id="sidebar">
+
+      <!-- ── Dashboard: Connection + Status ── -->
+      <div class="sidebar-section" id="sidebar-connection">
+        <div class="sidebar-section-title" data-i18n="connection">CONNECTION</div>
+        <div class="sidebar-field">
+          <label data-i18n="robotIp">Robot IP</label>
+          <input type="text" id="input-ip" placeholder="192.168.1.100" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="sidebar-actions">
+          <button id="btn-connect" class="btn-primary" data-i18n="connect">Connect</button>
+          <button id="btn-disconnect" class="btn-secondary" data-i18n="disconnect">Disconnect</button>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="imuTopic">IMU Topic</label>
+          <select id="select-imu">
+            <option value="/n100/imu">/n100/imu</option>
+            <option value="/imu">/imu</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sidebar-section" id="sidebar-status">
+        <div class="sidebar-section-title" data-i18n="status">STATUS</div>
+        <div class="sidebar-status-grid">
+          <span class="status-label" data-i18n="status">State</span>
+          <span class="status-value" id="status-detail-state"><span id="status-detail-text">Offline</span></span>
+          <span class="status-label" data-i18n="address">Address</span>
+          <span class="status-value" id="status-detail-url">--</span>
+          <span class="status-label" data-i18n="messageRate">Message Rate</span>
+          <span class="status-value" id="status-detail-rate">0 Hz</span>
+          <span class="status-label" data-i18n="uptime">Uptime</span>
+          <span class="status-value" id="status-detail-uptime">--</span>
+        </div>
+        <div class="sidebar-alarm-panel">
+          <div class="sidebar-section-title" data-i18n="faultAlarmState">Alarm</div>
+          <div class="alarm-status alarm-status-sidebar">
+            <div class="metric"><span class="metric-label" data-i18n="faultAlarmState">Alarm</span><span class="metric-value" data-infer="alarm-state">--</span></div>
+            <div class="metric"><span class="metric-label" data-i18n="faultAlarmFault">Fault</span><span class="metric-value" data-infer="alarm-fault">--</span></div>
+            <div class="metric"><span class="metric-label" data-i18n="faultAlarmConfidence">Alarm Conf.</span><span class="metric-value" data-infer="alarm-confidence">--</span></div>
+            <div class="metric"><span class="metric-label" data-i18n="faultAlarmCount">Count</span><span class="metric-value" data-infer="alarm-count">0/3</span></div>
+            <div class="metric metric-wide"><span class="metric-label" data-i18n="faultAlarmFirstAt">First</span><span class="metric-value" data-infer="alarm-first-at">--</span></div>
+            <div class="metric metric-wide"><span class="metric-label" data-i18n="faultAlarmLastAt">Latest</span><span class="metric-value" data-infer="alarm-last-at">--</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Drive: D-pad + Cruise + Heading ── -->
+      <div class="sidebar-section" id="sidebar-drive" style="display:none;">
+        <div class="sidebar-section-title" data-i18n="manualDrive">MANUAL DRIVE</div>
+        <div class="dpad-container">
+          <canvas id="dpad-canvas" width="200" height="200"></canvas>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="strafe">Strafe</label>
+          <input type="range" id="input-strafe" min="-100" max="100" value="0" class="slider-input" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="speedMult">Speed Multiplier</label>
+          <select id="select-speed-mult">
+            <option value="0.25">×0.25</option>
+            <option value="0.50">×0.50</option>
+            <option value="0.75">×0.75</option>
+            <option value="1.00" selected>×1.00</option>
+          </select>
+        </div>
+        <div class="sidebar-actions drive-actions-row">
+          <button id="btn-stop" class="btn-secondary" data-i18n="stop">STOP</button>
+          <button id="btn-estop" class="btn-danger" data-i18n="estop">E-STOP</button>
+        </div>
+        <div id="estop-indicator" class="estop-indicator" style="display:none;" data-i18n="estopActive">E-STOP ACTIVE</div>
+
+        <div class="sidebar-section-title" style="margin-top:12px;" data-i18n="cruiseControl">CRUISE CONTROL</div>
+        <div class="sidebar-field">
+          <label data-i18n="cruiseSpeed">Speed (m/s)</label>
+          <input type="number" id="input-cruise-speed" value="0.2" min="0.05" max="1.5" step="0.05" />
+        </div>
+        <div class="cruise-dir-grid" id="cruise-dir-grid">
+          <button class="cruise-dir-btn" data-dx="-1" data-dy="1">↖</button>
+          <button class="cruise-dir-btn" data-dx="0" data-dy="1">↑</button>
+          <button class="cruise-dir-btn" data-dx="1" data-dy="1">↗</button>
+          <button class="cruise-dir-btn" data-dx="-1" data-dy="0">←</button>
+          <button class="cruise-dir-btn cruise-dir-center" data-dx="0" data-dy="0">●</button>
+          <button class="cruise-dir-btn" data-dx="1" data-dy="0">→</button>
+          <button class="cruise-dir-btn" data-dx="-1" data-dy="-1">↙</button>
+          <button class="cruise-dir-btn" data-dx="0" data-dy="-1">↓</button>
+          <button class="cruise-dir-btn" data-dx="1" data-dy="-1">↘</button>
+        </div>
+        <div class="sidebar-actions drive-actions-row">
+          <button id="btn-cruise-start" class="btn-primary" data-i18n="cruiseStart">Start</button>
+          <button id="btn-cruise-stop" class="btn-secondary" data-i18n="cruiseStop">Stop</button>
+        </div>
+        <div id="cruise-status-text" class="status-text" data-i18n="cruiseOff">cruise: off</div>
+
+        <div class="sidebar-section-title" style="margin-top:12px;" data-i18n="headingControl">HEADING</div>
+        <div class="sidebar-field">
+          <label data-i18n="targetAngle">Angle (°)</label>
+          <input type="number" id="input-heading-angle" value="0" step="0.1" />
+        </div>
+        <div class="sidebar-actions drive-actions-row">
+          <button id="btn-heading-send" class="btn-primary" data-i18n="sendAngle">Send</button>
+          <button id="btn-heading-zero" class="btn-secondary" data-i18n="setZero">Set 0</button>
+        </div>
+        <div id="heading-state-text" class="status-text">heading: idle</div>
+      </div>
+
+      <!-- ── Charts: chart toggles + time range ── -->
+      <div class="sidebar-section" id="sidebar-charts" style="display:none;">
+        <div class="sidebar-section-title" data-i18n="charts">CHARTS</div>
+        <label class="sidebar-check"><input type="checkbox" checked data-chart="speed" /> <span data-i18n="chartSpeed">Speed</span></label>
+        <label class="sidebar-check"><input type="checkbox" checked data-chart="current" /> <span data-i18n="chartCurrent">Current</span></label>
+        <label class="sidebar-check"><input type="checkbox" checked data-chart="imu" /> <span data-i18n="chartImuAccel">IMU Accel</span></label>
+        <label class="sidebar-check"><input type="checkbox" checked data-chart="heading" /> <span data-i18n="chartHeading">Heading</span></label>
+        <div class="sidebar-section-title" style="margin-top:16px;" data-i18n="timeRange">TIME RANGE</div>
+        <div class="time-range-btns">
+          <button class="btn-time active" data-seconds="30" data-i18n="sec30">30s</button>
+          <button class="btn-time" data-seconds="60" data-i18n="sec60">60s</button>
+          <button class="btn-time" data-seconds="120" data-i18n="sec120">2m</button>
+        </div>
+      </div>
+
+      <!-- ── Collect: collection + current reader + advanced + quality ── -->
+      <div class="sidebar-section" id="sidebar-collect" style="display:none;">
+        <div class="sidebar-section-title" data-i18n="dataCollection">COLLECTION</div>
+        <div class="sidebar-status-grid">
+          <span class="status-label" data-i18n="collectionState">State</span>
+          <span class="status-value" id="collect-state-text">● idle</span>
+          <span class="status-label" data-i18n="rowsCollected">Rows</span>
+          <span class="status-value" id="collect-rows-text">0</span>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="runId">Run ID</label>
+          <input type="text" id="input-collect-runid" placeholder="auto" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="outputDir">Output Dir</label>
+          <input type="text" id="input-collect-output" value="/home/wheeltec/R550PLUS_data_collect/log_v2" />
+        </div>
+        <div class="sidebar-actions">
+          <button id="btn-collect-start" class="btn-primary" data-i18n="startCollect">Start</button>
+          <button id="btn-collect-stop" class="btn-secondary" data-i18n="stopCollect">Stop</button>
+        </div>
+
+        <div class="sidebar-section-title" style="margin-top:12px;" data-i18n="currentReader">CURRENT READER</div>
+        <div class="sidebar-field">
+          <label data-i18n="readerPort">Port</label>
+          <input type="text" id="input-current-port" value="/dev/ttyUSB1" spellcheck="false" />
+        </div>
+        <div class="sidebar-status-grid">
+          <span class="status-label" data-i18n="readerPort">Port</span>
+          <span class="status-value" id="current-port-text">/dev/ttyUSB1</span>
+          <span class="status-label" data-i18n="readerFrames">Frames</span>
+          <span class="status-value" id="current-frames-text">0</span>
+        </div>
+        <button id="btn-current-reconnect" class="btn-secondary" style="width:100%;margin-top:6px;" data-i18n="readerReconnect">Reconnect</button>
+
+        <div class="sidebar-section-title advanced-toggle" style="margin-top:12px;cursor:pointer;" id="advanced-toggle">▾ Advanced</div>
+        <div id="advanced-panel">
+          <div class="sidebar-field">
+            <label data-i18n="faultLabel">Fault Label</label>
+            <select id="input-collect-fault-label">
+              <option value="0">0 - normal</option>
+              <option value="1">1 - drive_abnormal</option>
+              <option value="2">2 - wheel_slip</option>
+              <option value="3">3 - shaft_eccentric</option>
+            </select>
+          </div>
+          <div class="sidebar-field">
+            <label data-i18n="faultMode">Fault Mode</label>
+            <input type="number" id="input-collect-fault-mode" value="0" min="0" max="10" />
+          </div>
+          <div class="sidebar-field">
+            <label data-i18n="motionMode">Motion</label>
+            <select id="input-collect-motion">
+              <option value="straight_back_forth_0.25ms">straight_back_forth_0.25ms</option>
+              <option value="circle">circle</option>
+              <option value="figure_eight">figure_eight</option>
+            </select>
+          </div>
+          <div class="sidebar-field">
+            <label data-i18n="expectedRate">Rate (Hz)</label>
+            <input type="number" id="input-collect-rate" value="20" min="1" max="40" />
+          </div>
+          <div class="sidebar-field">
+            <label data-i18n="autoStop">Auto-stop</label>
+            <input type="number" id="input-collect-autostop" value="0" min="0" placeholder="0" />
+            <span style="font-size:10px;color:var(--text-secondary);" data-i18n="autoStopUnit">s (0=off)</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title" style="margin-top:12px;" data-i18n="quality">QUALITY</div>
+        <div class="sidebar-status-grid">
+          <span class="status-label" data-i18n="qualityRate">Rate</span>
+          <span class="status-value" id="quality-rate-text">--</span>
+          <span class="status-label" data-i18n="qualityDrift">Drift</span>
+          <span class="status-value" id="quality-drift-text">--</span>
+          <span class="status-label" data-i18n="qualityAge">Data Age</span>
+          <span class="status-value" id="quality-age-text">--</span>
+          <span class="status-label" data-i18n="qualityDuration">Duration</span>
+          <span class="status-value" id="quality-duration-text">--</span>
+        </div>
+      </div>
+
+      <!-- ── Experiment: fault config + experiment wizard + fault injection ── -->
+      <div class="sidebar-section" id="sidebar-experiment" style="display:none;">
+        <div class="sidebar-section-title" data-i18n="experimentTitle">EXPERIMENT</div>
+        <div class="sidebar-field">
+          <label data-i18n="faultType">Fault Type</label>
+          <select id="input-experiment-fault-type">
+            <option value="normal" data-i18n="faultNormal">Normal</option>
+            <option value="drive_abnormal" data-i18n="faultDriveAbnormal">Drive Abnormal</option>
+            <option value="wheel_slip" data-i18n="faultWheelSlip">Wheel Slip</option>
+            <option value="shaft_eccentric" data-i18n="faultShaftEccentric">Shaft Eccentric</option>
+          </select>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="faultWheels">Fault Wheels</label>
+          <div class="wheels-row">
+            <label class="sidebar-check"><input type="checkbox" id="exp-wheel-a" /> A</label>
+            <input type="number" id="exp-alpha-a-value" class="wheel-alpha-value" min="0" max="1" step="0.01" value="1.00" />
+          </div>
+          <div class="wheels-row">
+            <label class="sidebar-check"><input type="checkbox" id="exp-wheel-b" /> B</label>
+            <input type="number" id="exp-alpha-b-value" class="wheel-alpha-value" min="0" max="1" step="0.01" value="0.50" />
+          </div>
+          <div class="wheels-row">
+            <label class="sidebar-check"><input type="checkbox" id="exp-wheel-c" /> C</label>
+            <input type="number" id="exp-alpha-c-value" class="wheel-alpha-value" min="0" max="1" step="0.01" value="1.00" />
+          </div>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="experimentRunId">Run ID</label>
+          <input type="text" id="input-experiment-runid" placeholder="auto" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="experimentDuration">Duration (s)</label>
+          <input type="number" id="input-experiment-duration" value="60" min="5" max="3600" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="motionMode">Motion</label>
+          <select id="input-experiment-motion">
+            <option value="straight_back_forth_0.25ms">straight_back_forth_0.25ms</option>
+            <option value="circle">circle</option>
+            <option value="figure_eight">figure_eight</option>
+          </select>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="experimentRate">Rate (Hz)</label>
+          <input type="number" id="input-experiment-rate" value="20" min="1" max="40" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="experimentOutput">Output Dir</label>
+          <input type="text" id="input-experiment-output" value="/home/wheeltec/R550PLUS_data_collect/log_v2" />
+        </div>
+        <div class="sidebar-actions">
+          <button id="btn-experiment-start" class="btn-primary" data-i18n="startExperiment">Start Experiment</button>
+          <button id="btn-experiment-reset" class="btn-secondary" data-i18n="resetExperiment">Reset</button>
+        </div>
+        <div id="experiment-status-text" class="status-text">idle</div>
+
+        <div class="sidebar-section-title" style="margin-top:12px;" data-i18n="faultInjection">FAULT INJECTION</div>
+        <div class="sidebar-field">
+          <label data-i18n="faultEnable">Enable</label>
+          <select id="input-fault-enable">
+            <option value="0">Off</option>
+            <option value="1">On</option>
+          </select>
+        </div>
+        <div class="sidebar-actions">
+          <button id="btn-fault-apply" class="btn-primary" data-i18n="faultApply">Apply</button>
+          <button id="btn-fault-reset" class="btn-secondary" data-i18n="faultReset">Reset</button>
+        </div>
+        <div id="fault-status-text" class="status-text" data-i18n="faultIdle">idle</div>
+      </div>
+
+      <!-- ── Settings: appearance + history + about ── -->
+      <div class="sidebar-section" id="sidebar-settings" style="display:none;">
+        <div class="sidebar-section-title" data-i18n="appearance">APPEARANCE</div>
+        <div class="sidebar-field">
+          <label data-i18n="theme">Theme</label>
+          <select id="select-theme">
+            <option value="dark" data-i18n="dark">Dark</option>
+            <option value="light" data-i18n="light">Light</option>
+          </select>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="language">Language</label>
+          <select id="select-lang">
+            <option value="zh" data-i18n="langZh">中文</option>
+            <option value="en" data-i18n="langEn">English</option>
+          </select>
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="fontFamily">字体</label>
+          <select id="select-font-family">
+            <option value="system" data-i18n="fontSystem">系统默认</option>
+            <option value="microsoft" data-i18n="fontMicrosoft">微软雅黑</option>
+            <option value="mono" data-i18n="fontMono">等宽字体</option>
+            <option value="serif" data-i18n="fontSerif">衬线字体</option>
+          </select>
+        </div>
+        <div class="sidebar-field">
+          <label><span data-i18n="fontSize">字号</span> <span class="setting-value" id="font-size-value">13px</span></label>
+          <input type="range" id="input-font-size" min="11" max="18" step="1" value="13" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="backgroundImage">背景图路径</label>
+          <input id="input-bg-image" type="text" placeholder="D:\path\image.png" />
+        </div>
+        <div class="sidebar-field">
+          <label><span data-i18n="backgroundOpacity">背景透明度</span> <span class="setting-value" id="bg-opacity-value">0%</span></label>
+          <input type="range" id="input-bg-opacity" min="0" max="70" step="5" value="0" />
+        </div>
+        <div class="sidebar-field">
+          <label><span data-i18n="backgroundBlur">背景模糊</span> <span class="setting-value" id="bg-blur-value">0px</span></label>
+          <input type="range" id="input-bg-blur" min="0" max="12" step="1" value="0" />
+        </div>
+        <div class="sidebar-actions">
+          <button id="btn-appearance-reset" class="btn-secondary" data-i18n="resetAppearance">重置外观</button>
+        </div>
+        <div class="sidebar-section-title" style="margin-top:16px;" data-i18n="inference">FAULT INFERENCE</div>
+        <div class="sidebar-field">
+          <label data-i18n="modelManifest">Model Manifest</label>
+          <input id="input-inference-manifest" type="text" spellcheck="false" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="modelRoot">Model Code Root</label>
+          <input id="input-model-root" type="text" spellcheck="false" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="selectedModelDir">Selected Model Dir</label>
+          <input id="input-selected-model-dir" type="text" spellcheck="false" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="modelOutputDir">Output Dir</label>
+          <input id="input-model-output-dir" type="text" spellcheck="false" />
+        </div>
+        <div class="sidebar-field">
+          <label data-i18n="pythonRuntime">Python Runtime</label>
+          <input id="input-python-runtime" type="text" placeholder="auto" spellcheck="false" />
+        </div>
+        <div class="sidebar-actions">
+          <button id="btn-inference-reload" class="btn-primary" data-i18n="reloadModel">Reload</button>
+          <button id="btn-model-convert" class="btn-secondary" data-i18n="convertModel">Convert Model</button>
+          <button id="btn-inference-status" class="btn-secondary" data-i18n="checkStatus">Status</button>
+        </div>
+        <pre id="model-convert-log" class="mini-log">--</pre>
+        <div id="inference-settings-status" class="status-text">--</div>
+        <div class="sidebar-section-title" style="margin-top:16px;" data-i18n="connectionHistory">CONNECTION HISTORY</div>
+        <div id="connection-history"></div>
+        <div class="sidebar-section-title" style="margin-top:16px;" data-i18n="about">ABOUT</div>
+        <div class="about-text">
+          <span class="status-label" data-i18n="version">Version</span>
+          <span class="status-value">1.0.0</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══ Main Content ═══ -->
+    <main id="main-content">
+
+      <!-- ── Dashboard View ── -->
+      <div id="view-dashboard" class="view active">
+        <div class="dashboard-grid">
+          <div class="card" id="card-odometry">
+            <div class="card-header" data-i18n="odometry">ODOMETRY</div>
+            <div class="card-body">
+              <div class="metric"><span class="metric-label" data-i18n="vx">vx</span><span class="metric-value" id="val-vx">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="vy">vy</span><span class="metric-value" id="val-vy">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="wz">wz</span><span class="metric-value" id="val-wz">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="posX">x</span><span class="metric-value" id="val-posx">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="posY">y</span><span class="metric-value" id="val-posy">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="yaw">yaw</span><span class="metric-value" id="val-yaw">--</span></div>
+            </div>
+          </div>
+          <div class="card" id="card-imu">
+            <div class="card-header" data-i18n="imu">IMU</div>
+            <div class="card-body">
+              <div class="metric-section-label">Gyro</div>
+              <div class="metric"><span class="metric-label" data-i18n="gx">gx</span><span class="metric-value" id="val-gx">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="gy">gy</span><span class="metric-value" id="val-gy">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="gz">gz</span><span class="metric-value" id="val-gz">--</span></div>
+              <div class="metric-section-label">Accel</div>
+              <div class="metric"><span class="metric-label" data-i18n="ax">ax</span><span class="metric-value" id="val-ax">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="ay">ay</span><span class="metric-value" id="val-ay">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="az">az</span><span class="metric-value" id="val-az">--</span></div>
+            </div>
+          </div>
+          <div class="card" id="card-power">
+            <div class="card-header" data-i18n="power">POWER</div>
+            <div class="card-body">
+              <div class="metric metric-highlight"><span class="metric-label" data-i18n="voltage">Voltage</span><span class="metric-value" id="val-voltage">--</span></div>
+              <div class="metric-section-label" data-i18n="currentA">Current</div>
+              <div class="metric"><span class="metric-label" data-i18n="currentA">I₀</span><span class="metric-value" id="val-c0">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="currentB">I₁</span><span class="metric-value" id="val-c1">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="currentC">I₂</span><span class="metric-value" id="val-c2">--</span></div>
+            </div>
+          </div>
+          <div class="card" id="card-wheels">
+            <div class="card-header" data-i18n="wheelSpeed">WHEEL SPEED</div>
+            <div class="card-body card-wheels-body">
+              <div class="metric metric-big"><span class="metric-label" data-i18n="wheelA">A</span><span class="metric-value" id="val-wa">--</span></div>
+              <div class="metric metric-big"><span class="metric-label" data-i18n="wheelB">B</span><span class="metric-value" id="val-wb">--</span></div>
+              <div class="metric metric-big"><span class="metric-label" data-i18n="wheelC">C</span><span class="metric-value" id="val-wc">--</span></div>
+            </div>
+          </div>
+          <div class="card" id="card-heading">
+            <div class="card-header" data-i18n="heading">HEADING</div>
+            <div class="card-body card-heading-body">
+              <div class="heading-display">
+                <svg class="heading-compass" viewBox="0 0 120 120" width="100" height="100">
+                  <circle cx="60" cy="60" r="56" fill="none" stroke="var(--panel-border)" stroke-width="1"/>
+                  <circle cx="60" cy="60" r="48" fill="none" stroke="var(--chart-grid)" stroke-width="0.5"/>
+                  <line x1="60" y1="12" x2="60" y2="24" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                  <line x1="60" y1="96" x2="60" y2="108" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                  <line x1="12" y1="60" x2="24" y2="60" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                  <line x1="96" y1="60" x2="108" y2="60" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                  <text x="60" y="9" text-anchor="middle" fill="var(--accent)" font-size="9" font-family="sans-serif">N</text>
+                  <line id="heading-needle" x1="60" y1="60" x2="60" y2="18" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" transform="rotate(0, 60, 60)"/>
+                  <circle cx="60" cy="60" r="3" fill="var(--accent)"/>
+                </svg>
+                <span class="heading-value" id="val-heading">--</span>
+                <span class="heading-unit" data-i18n="deg">deg</span>
+              </div>
+            </div>
+          </div>
+          <div class="card inference-card" id="card-inference">
+            <div class="card-header" data-i18n="inference">FAULT INFERENCE</div>
+            <div class="card-body">
+              <div class="metric metric-highlight"><span class="metric-label" data-i18n="prediction">Prediction</span><span class="metric-value" id="infer-class">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="confidence">Confidence</span><span class="metric-value" id="infer-confidence">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="backend">Backend</span><span class="metric-value" id="infer-backend">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="device">Device</span><span class="metric-value" id="infer-device">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="latency">Latency</span><span class="metric-value" id="infer-latency">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="windowState">Window</span><span class="metric-value" id="infer-window">--</span></div>
+              <div class="prob-list" id="infer-probs"></div>
+              <div class="status-text" id="infer-error">--</div>
+            </div>
+          </div>
+        </div>
+        <div class="card chart-card">
+          <div class="card-header">
+            <span data-i18n="driveChart">VELOCITY</span>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="--dot-color:#3794ff;"></span> vx</span>
+              <span class="legend-item"><span class="legend-dot" style="--dot-color:#4ec9b0;"></span> vy</span>
+              <span class="legend-item"><span class="legend-dot" style="--dot-color:#cca700;"></span> wz</span>
+            </div>
+          </div>
+          <canvas id="speed-chart" class="chart-canvas"></canvas>
+        </div>
+        <div class="card event-log-card">
+          <div class="card-header" data-i18n="eventLog">EVENT LOG</div>
+          <div class="event-log" id="event-log">
+            <div class="event-entry placeholder" data-i18n="noData">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Drive View ── -->
+      <div id="view-drive" class="view" style="display:none;">
+        <div class="dashboard-grid">
+          <div class="card drive-telemetry-card">
+            <div class="card-header" data-i18n="driveTelemetry">DRIVE TELEMETRY</div>
+            <div class="card-body">
+              <div class="metric metric-highlight"><span class="metric-label" data-i18n="vx">vx</span><span class="metric-value" id="drive-val-vx">--</span></div>
+              <div class="metric metric-highlight"><span class="metric-label" data-i18n="vy">vy</span><span class="metric-value" id="drive-val-vy">--</span></div>
+              <div class="metric metric-highlight"><span class="metric-label" data-i18n="wz">wz</span><span class="metric-value" id="drive-val-wz">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="voltage">Voltage</span><span class="metric-value" id="drive-val-voltage">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="heading">Heading</span><span class="metric-value" id="drive-val-heading">--</span></div>
+            </div>
+          </div>
+          <div class="card drive-status-card">
+            <div class="card-header" data-i18n="controlStatus">CONTROL</div>
+            <div class="card-body">
+              <div class="metric"><span class="metric-label" data-i18n="controlStatus">State</span><span class="metric-value" id="drive-val-control">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="speedMult">Multiplier</span><span class="metric-value" id="drive-val-mult">×1.00</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="cruiseControl">Cruise</span><span class="metric-value" id="drive-val-cruise">off</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card chart-card">
+          <div class="card-header">
+            <span data-i18n="driveChart">VELOCITY</span>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="--dot-color:#3794ff;"></span> vx</span>
+              <span class="legend-item"><span class="legend-dot" style="--dot-color:#4ec9b0;"></span> vy</span>
+              <span class="legend-item"><span class="legend-dot" style="--dot-color:#cca700;"></span> wz</span>
+            </div>
+          </div>
+          <canvas id="drive-chart" class="chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- ── Charts View ── -->
+      <div id="view-charts" class="view" style="display:none;">
+        <div class="charts-full">
+          <div class="card chart-card-full">
+            <div class="card-header" data-i18n="chartSpeed">SPEED</div>
+            <canvas id="chart-speed" class="chart-canvas"></canvas>
+          </div>
+          <div class="card chart-card-full">
+            <div class="card-header" data-i18n="chartCurrent">CURRENT</div>
+            <canvas id="chart-current" class="chart-canvas"></canvas>
+          </div>
+          <div class="card chart-card-full">
+            <div class="card-header" data-i18n="chartImuAccel">IMU ACCELERATION</div>
+            <canvas id="chart-imu" class="chart-canvas"></canvas>
+          </div>
+          <div class="card chart-card-full heading-gauge-card" id="chart-heading-card">
+            <div class="card-header" data-i18n="chartHeading">HEADING</div>
+            <div id="chart-heading" class="heading-gauge">
+              <svg class="heading-compass" viewBox="0 0 120 120" width="180" height="180">
+                <circle cx="60" cy="60" r="56" fill="none" stroke="var(--panel-border)" stroke-width="1"/>
+                <circle cx="60" cy="60" r="48" fill="none" stroke="var(--chart-grid)" stroke-width="0.5"/>
+                <line x1="60" y1="12" x2="60" y2="24" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                <line x1="60" y1="96" x2="60" y2="108" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                <line x1="12" y1="60" x2="24" y2="60" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                <line x1="96" y1="60" x2="108" y2="60" stroke="var(--text-secondary)" stroke-width="1.5"/>
+                <text x="60" y="9" text-anchor="middle" fill="var(--accent)" font-size="9" font-family="sans-serif">N</text>
+                <line id="chart-heading-needle" x1="60" y1="60" x2="60" y2="18" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" transform="rotate(0, 60, 60)"/>
+                <circle cx="60" cy="60" r="3" fill="var(--accent)"/>
+              </svg>
+              <div class="heading-gauge-readout">
+                <span class="heading-gauge-label" data-i18n="heading">Heading</span>
+                <span class="heading-gauge-value" id="chart-heading-value">--</span>
+                <span class="heading-gauge-label" data-i18n="deg">deg</span>
+              </div>
+            </div>
+          </div>
+          <div class="card chart-card-full charts-inference-card inference-card">
+            <div class="card-header" data-i18n="inference">FAULT INFERENCE</div>
+            <div class="card-body inference-card-body">
+              <div class="metric metric-highlight"><span class="metric-label" data-i18n="prediction">Prediction</span><span class="metric-value" data-infer="class">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="confidence">Confidence</span><span class="metric-value" data-infer="confidence">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="backend">Backend</span><span class="metric-value" data-infer="backend">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="device">Device</span><span class="metric-value" data-infer="device">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="latency">Latency</span><span class="metric-value" data-infer="latency">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="windowState">Window</span><span class="metric-value" data-infer="window">--</span></div>
+              <div class="prob-list" data-infer-probs></div>
+              <div class="status-text" data-infer="error">--</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Collect View ── -->
+      <div id="view-collect" class="view" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <span data-i18n="csvFiles">CSV FILES</span>
+            <button id="btn-csv-refresh" class="btn-time active" data-i18n="csvRefresh">Refresh</button>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="csv-table-wrap">
+              <table class="csv-table" id="csv-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="fileName">Name</th>
+                    <th data-i18n="fileSize">Size</th>
+                    <th data-i18n="fileModified">Modified</th>
+                    <th data-i18n="fileActions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="csv-table-body">
+                  <tr><td colspan="4" style="color:var(--text-secondary);text-align:center;padding:20px;" data-i18n="noData">--</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card csv-preview-card">
+          <div class="card-header">
+            <span data-i18n="csvPreview">CSV PREVIEW</span>
+            <div class="csv-preview-tools">
+              <select id="select-csv-preview-rows" aria-label="CSV preview rows">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="200">200 rows</option>
+              </select>
+              <input id="input-csv-column-filter" type="text" placeholder="filter columns" data-i18n-placeholder="filterColumns" />
+            </div>
+          </div>
+          <div id="csv-preview-info" class="csv-preview-info" data-i18n="noData">--</div>
+          <div class="csv-table-wrap csv-preview-table-wrap">
+            <table class="csv-table csv-preview-table" id="csv-preview-table">
+              <thead id="csv-preview-head">
+                <tr><th data-i18n="noData">--</th></tr>
+              </thead>
+              <tbody id="csv-preview-body">
+                <tr><td style="color:var(--text-secondary);text-align:center;padding:20px;" data-i18n="noData">--</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span data-i18n="dataSummary">DATA SUMMARY</span>
+            <button id="btn-summary-refresh" class="btn-time active" data-i18n="csvRefresh">Refresh</button>
+          </div>
+          <div class="card-body" id="data-summary-body">
+            <div class="metric"><span class="metric-label" data-i18n="currentCsv">Current CSV</span><span class="metric-value" id="summary-selected">--</span></div>
+            <div class="metric"><span class="metric-label" data-i18n="files">Files</span><span class="metric-value" id="summary-files">--</span></div>
+            <div class="metric"><span class="metric-label" data-i18n="totalRows">Total Rows</span><span class="metric-value" id="summary-rows">--</span></div>
+            <div class="metric"><span class="metric-label" data-i18n="totalTime">Total Time</span><span class="metric-value" id="summary-time">--</span></div>
+            <div id="csv-http-debug" class="csv-http-debug" data-i18n="csvHttpRendererInitialized">HTTP CSV: renderer initialized</div>
+            <div id="csv-http-log" class="csv-http-log">
+              <div class="csv-http-log-entry" data-i18n="csvLogWaiting">CSV log: waiting for refresh</div>
+            </div>
+          </div>
+        </div>
+        <div class="card dataset-card">
+          <div class="card-header">
+            <span data-i18n="datasetBuilder">DATASET BUILDER</span>
+            <button id="btn-dataset-refresh" class="btn-time active" data-i18n="refreshDatasets">Refresh</button>
+          </div>
+          <div class="card-body">
+            <div class="dataset-form">
+              <label><span data-i18n="inputDir">Input Dir</span><input id="input-dataset-input" type="text" value="/home/wheeltec/R550PLUS_data_collect/log_v2" spellcheck="false" /></label>
+              <label><span data-i18n="datasetOutput">Dataset Dir</span><input id="input-dataset-output" type="text" value="/home/wheeltec/R550PLUS_dataset/four_class_v1" spellcheck="false" /></label>
+              <label><span data-i18n="featureSet">Feature Set</span><select id="select-dataset-feature"><option value="15ch">15ch</option><option value="12ch">12ch</option></select></label>
+              <label><span data-i18n="windowSize">Window</span><input id="input-dataset-window" type="number" min="10" value="50" /></label>
+              <label><span data-i18n="stepSize">Step</span><input id="input-dataset-step" type="number" min="1" value="10" /></label>
+              <label><span data-i18n="scaler">Scaler</span><select id="select-dataset-scaler"><option value="standard">standard</option></select></label>
+              <label><span data-i18n="trimStart">Trim Start</span><input id="input-dataset-trim-start" type="number" min="0" step="0.5" value="5" /></label>
+              <label><span data-i18n="trimEnd">Trim End</span><input id="input-dataset-trim-end" type="number" min="0" step="0.5" value="5" /></label>
+              <label class="dataset-checkbox"><input id="input-dataset-same-run" type="checkbox" /><span data-i18n="allowSameRunSplit">Allow same-run split</span></label>
+            </div>
+            <div class="dataset-actions">
+              <button id="btn-dataset-build" class="btn-primary" data-i18n="buildDatasetBtn">Build Dataset</button>
+            </div>
+            <div class="dataset-status-row">
+              <span data-i18n="datasetStatus">Status</span>
+              <strong id="dataset-status-text">idle</strong>
+            </div>
+            <div class="dataset-result" id="dataset-result">--</div>
+            <pre class="dataset-log" id="dataset-log">--</pre>
+            <div class="dataset-list" id="dataset-list"></div>
+            <div class="csv-table-wrap dataset-build-history">
+              <table class="csv-table" id="dataset-build-history-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="buildId">Build ID</th>
+                    <th data-i18n="datasetStatus">Status</th>
+                    <th data-i18n="datasetConfig">Config</th>
+                    <th data-i18n="samples">Samples</th>
+                    <th data-i18n="startedAt">Started</th>
+                  </tr>
+                </thead>
+                <tbody id="dataset-build-history-body">
+                  <tr><td colspan="5" style="color:var(--text-secondary);text-align:center;padding:20px;" data-i18n="noData">--</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Experiment View ── -->
+      <div id="view-experiment" class="view" style="display:none;">
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header" data-i18n="experimentSummary">EXPERIMENT SUMMARY</div>
+            <div class="card-body">
+              <div class="metric"><span class="metric-label" data-i18n="faultType">Type</span><span class="metric-value" id="exp-summary-type">normal</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="faultWheels">Wheels</span><span class="metric-value" id="exp-summary-wheels">none</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="experimentRunId">Run ID</span><span class="metric-value" id="exp-summary-runid">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="experimentDuration">Duration</span><span class="metric-value" id="exp-summary-duration">60s</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" data-i18n="experimentStatus">STATUS</div>
+            <div class="card-body">
+              <div class="metric"><span class="metric-label" data-i18n="collectionState">Collection</span><span class="metric-value" id="exp-status-collect">idle</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="faultInjection">Fault</span><span class="metric-value" id="exp-status-fault">idle</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="rowsCollected">Rows</span><span class="metric-value" id="exp-status-rows">0</span></div>
+            </div>
+          </div>
+          <div class="card inference-card experiment-inference-card">
+            <div class="card-header" data-i18n="inference">FAULT INFERENCE</div>
+            <div class="card-body">
+              <div class="metric metric-highlight"><span class="metric-label" data-i18n="prediction">Prediction</span><span class="metric-value" data-infer="class">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="confidence">Confidence</span><span class="metric-value" data-infer="confidence">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="backend">Backend</span><span class="metric-value" data-infer="backend">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="device">Device</span><span class="metric-value" data-infer="device">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="latency">Latency</span><span class="metric-value" data-infer="latency">--</span></div>
+              <div class="metric"><span class="metric-label" data-i18n="windowState">Window</span><span class="metric-value" data-infer="window">--</span></div>
+              <div class="prob-list" data-infer-probs></div>
+              <div class="status-text" data-infer="error">--</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" data-i18n="csvFiles">RECENT CSV FILES</div>
+          <div class="card-body" style="padding:0;">
+            <div class="csv-table-wrap">
+              <table class="csv-table" id="exp-csv-table">
+                <thead>
+                  <tr><th data-i18n="fileName">Name</th><th data-i18n="fileSize">Size</th><th data-i18n="fileModified">Modified</th></tr>
+                </thead>
+                <tbody id="exp-csv-table-body">
+                  <tr><td colspan="3" style="color:var(--text-secondary);text-align:center;padding:20px;" data-i18n="noData">--</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" data-i18n="experimentHistory">EXPERIMENT HISTORY</div>
+          <div class="card-body" style="padding:0;">
+            <div class="csv-table-wrap">
+              <table class="csv-table" id="exp-history-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="experimentRunId">Run ID</th>
+                    <th data-i18n="faultType">Type</th>
+                    <th data-i18n="experimentStatus">Status</th>
+                    <th data-i18n="rowsCollected">Rows</th>
+                    <th data-i18n="startedAt">Started</th>
+                  </tr>
+                </thead>
+                <tbody id="exp-history-body">
+                  <tr><td colspan="5" style="color:var(--text-secondary);text-align:center;padding:20px;" data-i18n="noData">--</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Settings View (reuses dashboard with settings sidebar) ── -->
+      <div id="view-settings" class="view" style="display:none;"></div>
+    </main>
+  </div>
+
+  <!-- ═══ Status Bar ═══ -->
+  <footer id="statusbar">
+    <span class="status-left" id="status-url-text">🔌 <span>Not connected</span></span>
+    <span class="status-center" id="status-state-text">Offline</span>
+    <span class="status-right">
+      <span id="status-gamepad-text" style="display:none;">🎮</span>
+      <span id="status-rate-text">0 Hz</span>
+      <span class="status-sep">|</span>
+      <button id="statusbar-fault-enable-btn" class="statusbar-btn fault-alarm-toggle" type="button" data-i18n="faultAlarmStatusOff">FAULT OFF</button>
+      <button id="statusbar-fault-reset-btn" class="statusbar-btn fault-alarm-reset" type="button" data-i18n="faultAlarmReset" disabled>RESET</button>
+    </span>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="topics.js"></script>
+  <script src="ros-client.js"></script>
+  <script src="charts.js"></script>
+  <script src="drive.js"></script>
+  <script src="collection.js"></script>
+  <script src="experiment.js"></script>
+  <script src="data-workspace.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

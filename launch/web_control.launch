@@ -1,0 +1,167 @@
+<launch>
+  <arg name="start_base" default="true"/>
+  <arg name="start_current_reader" default="true"/>
+  <arg name="start_data_collector" default="true"/>
+  <arg name="start_fdilink_ahrs" default="true"/>
+
+  <arg name="rosbridge_host" default="0.0.0.0"/>
+  <arg name="rosbridge_port" default="9090"/>
+
+  <arg name="web_host" default="0.0.0.0"/>
+  <arg name="web_port" default="8000"/>
+
+  <arg name="current_port" default="/dev/ttyUSB1"/>
+  <arg name="current_baud" default="115200"/>
+  <arg name="current_open_retries" default="3"/>
+  <arg name="current_open_retry_delay" default="1.0"/>
+
+  <arg name="output_dir" default="/home/wheeltec/R550PLUS_data_collect/log_v2"/>
+  <arg name="fault_label" default="0"/>
+  <arg name="fault_name" default="normal"/>
+  <arg name="label" default="$(arg fault_label)"/>
+  <arg name="fault_type_for_csv" default="$(arg fault_name)"/>
+  <arg name="fault_wheel_for_csv" default="none"/>
+  <arg name="fault_mode" default="0"/>
+  <arg name="fault_alpha" default="1.0"/>
+  <arg name="run_id" default=""/>
+  <arg name="motion_mode" default="straight_back_forth_0.25ms"/>
+  <arg name="expected_rate" default="20.0"/>
+  <arg name="require_current_before_record" default="true"/>
+  <arg name="current_wait_timeout" default="20.0"/>
+  <arg name="imu_topic" default="/imu"/>
+  <arg name="odom_topic" default="/odom"/>
+  <arg name="voltage_topic" default="/PowerVoltage"/>
+  <arg name="current_topic" default="/current_data"/>
+  <arg name="cmd_topic" default="/cmd_vel"/>
+  <arg name="wheel_speed_topic" default="/wheel_speed"/>
+  <arg name="collection_auto_start" default="false"/>
+  <arg name="collection_enable_topic" default="/web/collection_enable"/>
+  <arg name="collection_config_topic" default="/web/collection_config"/>
+  <arg name="collection_status_topic" default="/web/collection_status"/>
+  <arg name="current_reader_config_topic" default="/web/current_reader_config"/>
+  <arg name="current_reader_status_topic" default="/web/current_reader_status"/>
+
+  <include file="$(find fdilink_ahrs)/launch/ahrs_data.launch" if="$(arg start_fdilink_ahrs)">
+  </include>
+
+  <arg name="publish_rate" default="40.0"/>
+  <arg name="cmd_timeout" default="0.5"/>
+  <arg name="heartbeat_timeout" default="1.0"/>
+  <arg name="max_linear_x" default="1.50"/>
+  <arg name="max_linear_y" default="1.00"/>
+  <arg name="max_angular_z" default="3.75"/>
+  <arg name="linear_deadband" default="0.02"/>
+  <arg name="angular_deadband" default="0.03"/>
+  <arg name="response_exponent" default="0.70"/>
+  <arg name="min_linear_ratio" default="0.20"/>
+  <arg name="min_lateral_ratio" default="0.15"/>
+  <arg name="min_angular_ratio" default="0.24"/>
+
+  <!-- 故障注入参数 -->
+  <arg name="start_fault_injector" default="true"/>
+  <arg name="enable_fault" default="false"/>
+  <arg name="fault_type" default="normal"/>
+  <arg name="fault_wheel" default="B"/>
+  <arg name="fault_injector_alpha" default="0.5"/>
+  <arg name="chassis_radius" default="0.15"/>
+
+  <include file="$(find turn_on_wheeltec_robot)/launch/include/base_serial.launch" if="$(arg start_base)">
+  </include>
+
+  <node if="$(arg start_current_reader)"
+        name="current_reader"
+        pkg="turn_on_wheeltec_robot"
+        type="current_reader_node"
+        output="screen">
+    <param name="port" value="$(arg current_port)"/>
+    <param name="baud" value="$(arg current_baud)"/>
+    <param name="open_retries" value="$(arg current_open_retries)"/>
+    <param name="open_retry_delay" value="$(arg current_open_retry_delay)"/>
+    <param name="config_topic" value="$(arg current_reader_config_topic)"/>
+    <param name="status_topic" value="$(arg current_reader_status_topic)"/>
+  </node>
+
+  <!-- 故障注入节点 -->
+  <node if="$(arg start_fault_injector)"
+        name="fault_injector"
+        pkg="turn_on_wheeltec_robot"
+        type="fault_injector.py"
+        output="screen">
+    <param name="enable_fault" value="$(arg enable_fault)"/>
+    <param name="fault_type" value="$(arg fault_type)"/>
+    <param name="fault_wheel" value="$(arg fault_wheel)"/>
+    <param name="fault_alpha" value="$(arg fault_injector_alpha)"/>
+    <param name="chassis_radius" value="$(arg chassis_radius)"/>
+    <param name="output_topic" value="/chassis/fault_config"/>
+  </node>
+
+  <node name="web_cmd_vel_adapter"
+        pkg="turn_on_wheeltec_robot"
+        type="cmd_vel_web_adapter_node"
+        output="screen">
+    <param name="input_topic" value="/cmd_vel_web"/>
+    <param name="output_topic" value="/cmd_vel"/>
+    <param name="heartbeat_topic" value="/web/heartbeat"/>
+    <param name="estop_topic" value="/web/estop"/>
+    <param name="status_topic" value="/web/control_status"/>
+    <param name="publish_rate" value="$(arg publish_rate)"/>
+    <param name="cmd_timeout" value="$(arg cmd_timeout)"/>
+    <param name="heartbeat_timeout" value="$(arg heartbeat_timeout)"/>
+    <param name="max_linear_x" value="$(arg max_linear_x)"/>
+    <param name="max_linear_y" value="$(arg max_linear_y)"/>
+    <param name="max_angular_z" value="$(arg max_angular_z)"/>
+    <param name="linear_deadband" value="$(arg linear_deadband)"/>
+    <param name="angular_deadband" value="$(arg angular_deadband)"/>
+    <param name="response_exponent" value="$(arg response_exponent)"/>
+    <param name="min_linear_ratio" value="$(arg min_linear_ratio)"/>
+    <param name="min_lateral_ratio" value="$(arg min_lateral_ratio)"/>
+    <param name="min_angular_ratio" value="$(arg min_angular_ratio)"/>
+  </node>
+
+  <node name="rosbridge_websocket"
+        pkg="rosbridge_server"
+        type="rosbridge_websocket"
+        output="screen">
+    <param name="address" value="$(arg rosbridge_host)"/>
+    <param name="port" value="$(arg rosbridge_port)"/>
+  </node>
+
+  <node name="web_dashboard_server"
+        pkg="turn_on_wheeltec_robot"
+        type="web_dashboard_server.py"
+        output="screen">
+    <param name="host" value="$(arg web_host)"/>
+    <param name="port" value="$(arg web_port)"/>
+    <param name="data_dir" value="$(arg output_dir)"/>
+  </node>
+
+  <node if="$(arg start_data_collector)"
+        name="data_collector"
+        pkg="turn_on_wheeltec_robot"
+        type="data_collector.py"
+        output="screen">
+    <param name="output_dir" value="$(arg output_dir)"/>
+    <param name="fault_label" value="$(arg fault_label)"/>
+    <param name="fault_name" value="$(arg fault_name)"/>
+    <param name="label" value="$(arg label)"/>
+    <param name="fault_type" value="$(arg fault_type_for_csv)"/>
+    <param name="fault_wheel" value="$(arg fault_wheel_for_csv)"/>
+    <param name="fault_mode" value="$(arg fault_mode)"/>
+    <param name="fault_alpha" value="$(arg fault_alpha)"/>
+    <param name="run_id" value="$(arg run_id)"/>
+    <param name="motion_mode" value="$(arg motion_mode)"/>
+    <param name="imu_topic" value="$(arg imu_topic)"/>
+    <param name="odom_topic" value="$(arg odom_topic)"/>
+    <param name="voltage_topic" value="$(arg voltage_topic)"/>
+    <param name="current_topic" value="$(arg current_topic)"/>
+    <param name="cmd_topic" value="$(arg cmd_topic)"/>
+    <param name="wheel_speed_topic" value="$(arg wheel_speed_topic)"/>
+    <param name="expected_rate" value="$(arg expected_rate)"/>
+    <param name="require_current_before_record" value="$(arg require_current_before_record)"/>
+    <param name="current_wait_timeout" value="$(arg current_wait_timeout)"/>
+    <param name="auto_start" value="$(arg collection_auto_start)"/>
+    <param name="enable_topic" value="$(arg collection_enable_topic)"/>
+    <param name="config_topic" value="$(arg collection_config_topic)"/>
+    <param name="status_topic" value="$(arg collection_status_topic)"/>
+  </node>
+</launch>

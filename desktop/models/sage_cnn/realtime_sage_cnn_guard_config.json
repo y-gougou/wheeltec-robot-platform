@@ -1,0 +1,15 @@
+{
+  "window_size": 50,
+  "input_channels": 15,
+  "static_linear_speed_threshold": 0.08,
+  "static_angular_speed_threshold": 0.08,
+  "static_wheel_speed_threshold": 0.08,
+  "static_required_windows": 5,
+  "vote_window_size": 5,
+  "vote_required_count": 4,
+  "low_confidence_threshold": 0.7,
+  "margin_threshold": 0.15,
+  "static_display_label": "normal_static",
+  "static_report_label": "normal",
+  "ambiguous_pair_hold_enabled": true
+}

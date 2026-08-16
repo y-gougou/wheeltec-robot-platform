@@ -1,0 +1,45 @@
+{
+  "name": "YP-telemetry-dashboard",
+  "version": "1.1.0",
+  "description": "VS Code-style ROS telemetry dashboard for YP robots",
+  "main": "main.js",
+  "author": "YP",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "setup:env": "node scripts/setup-env.js",
+    "setup:check": "node scripts/setup-env.js --check-only",
+    "setup:env:build-infer": "node scripts/setup-env.js --build-inference",
+    "setup:env:offline-infer": "node scripts/setup-env.js --build-inference --offline-inference",
+    "setup:env:system": "node scripts/setup-env.js --use-system-tools",
+    "setup:env:win": "powershell -ExecutionPolicy Bypass -File scripts/setup-env.ps1",
+    "setup:env:unix": "bash scripts/setup-env.sh",
+    "build:infer": "node scripts/build-infer.js",
+    "build:infer:offline": "node scripts/build-infer.js --offline",
+    "build:ort:source": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-onnxruntime-source.ps1",
+    "build:infer:source": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-onnxruntime-source.ps1 -BuildInference",
+    "export:model": "python inference/tools/export_sage_cnn_onnx.py",
+    "postinstall": "electron-builder install-app-deps",
+    "prepare:release": "node scripts/prepare-release.js",
+    "prebuild": "node scripts/prepare-release.js",
+    "prebuild:linux": "node scripts/prepare-release.js",
+    "prebuild:linux:dir": "node scripts/prepare-release.js",
+    "prebuild:mac": "node scripts/prepare-release.js",
+    "prebuild:mac:dir": "node scripts/prepare-release.js",
+    "build:win": "node scripts/build-win.js",
+    "build:win:dir": "node scripts/build-win.js --dir",
+    "build:linux": "electron-builder --linux",
+    "build:linux:dir": "electron-builder --linux --dir",
+    "build:mac": "electron-builder --mac",
+    "build:mac:dir": "electron-builder --mac --dir",
+    "build": "electron-builder --win --linux",
+    "sync-name": "node scripts/sync-app-name.js"
+  },
+  "devDependencies": {
+    "electron": "43.4.0",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3"
+  }
+}

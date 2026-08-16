@@ -1,0 +1,52 @@
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# ROS/catkin local outputs
+build/
+devel/
+install/
+log/
+
+# Frontend dependencies and caches
+web/node_modules/
+# The production dashboard bundle is intentionally versioned so that the ROS
+# HTTP server works immediately after a fresh checkout.
+!web/dist/
+!web/dist/**
+web/.vite/
+web/npm-debug.log*
+
+# IDE/workspace files
+*.code-workspace
+
+# Desktop (Electron) dependencies and build output
+desktop/node_modules/
+desktop/dist/
+desktop/.toolchain/
+desktop/python/
+desktop/inference/onnxruntime/build/
+
+# Local archives and temporary files
+*.7z
+*.zip
+*.tmp
+*.log
+
+# ROS bag files
+*.bag
+
+# Launch file backups
+*.launch.save
+
+# Python packaging
+*.egg-info/
+.eggs/
+
+# Environment files
+.env
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
