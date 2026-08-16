@@ -93,9 +93,9 @@ roslaunch turn_on_wheeltec_robot web_control.launch
 This starts, by default:
 
 - `wheeltec_robot_node`, the STM32 chassis serial node.
-- `heading_bridge.py`, started by the base serial include.
-- `cmd_vel_web_adapter.py`, the Web command safety adapter.
-- `current_reader.py`, the current-board serial reader.
+- `heading_bridge_node`, started by the base serial include.
+- `cmd_vel_web_adapter_node`, the Web command safety adapter.
+- `current_reader_node`, the current-board serial reader.
 - `data_collector.py`, the CSV collection node.
 - `rosbridge_websocket`, used by the Web frontend.
 - `web_dashboard_server.py`, the static Web server and CSV file API.
@@ -162,7 +162,7 @@ Common parameters:
 | `start_base` | `true` | Start chassis serial node and heading bridge. |
 | `start_current_reader` | `true` | Start current-board reader. |
 | `start_data_collector` | `true` | Start CSV collector. |
-| `start_fdilink_ahrs` | `false` | Include `fdilink_ahrs/ahrs_data.launch`. |
+| `start_fdilink_ahrs` | `true` | Include `fdilink_ahrs/ahrs_data.launch`. |
 | `rosbridge_host` | `0.0.0.0` | rosbridge bind address. |
 | `rosbridge_port` | `9090` | rosbridge port. |
 | `web_host` | `0.0.0.0` | Web server bind address. |
@@ -321,7 +321,7 @@ Manual driving and cruise ultimately produce speed commands:
 ```text
 Web frontend
   -> /cmd_vel_web
-  -> cmd_vel_web_adapter.py
+  -> cmd_vel_web_adapter_node
   -> /cmd_vel
   -> wheeltec_robot_node
   -> STM32 serial frame
@@ -433,13 +433,13 @@ The preferred architecture is:
 
 ```text
 /n100/imu
-  -> heading_bridge.py
+  -> heading_bridge_node
   -> /chassis/heading_deg
   -> wheeltec_robot_node
   -> STM32 external heading frame, tx[2] = 3
 ```
 
-`heading_bridge.py`:
+The active C++ node, `heading_bridge_node`:
 
 - Subscribes `sensor_msgs/Imu`.
 - Converts quaternion orientation to yaw.
@@ -458,10 +458,11 @@ Default topics:
 | `/web/heading_zero` | `std_msgs/Empty` | Set current ROS heading to zero. |
 | `/web/heading_offset` | `std_msgs/Float32` | Manually set heading zero offset. |
 
-`heading_bridge.py` is started by `launch/include/base_serial.launch` when
+`heading_bridge_node` is started by `launch/include/base_serial.launch` when
 `start_heading_bridge:=true`, which is the default.
 
-The N100 driver itself is not always started by default. Enable it with:
+`web_control.launch` starts the N100 driver by default. To make that choice
+explicit, launch with:
 
 ```bash
 roslaunch turn_on_wheeltec_robot web_control.launch start_fdilink_ahrs:=true
@@ -536,7 +537,7 @@ roslaunch turn_on_wheeltec_robot web_control.launch \
 
 ## 11. Current Board Reader
 
-`current_reader.py` reads the current board and publishes:
+The active C++ node, `current_reader_node`, reads the current board and publishes:
 
 ```text
 /current_data    std_msgs/Float32MultiArray
@@ -790,7 +791,7 @@ Common causes:
 
 - `fdilink_ahrs` was not started.
 - N100 is on a different serial port.
-- `heading_bridge.py` is running but subscribing to the wrong `heading_imu_topic`.
+- `heading_bridge_node` is running but subscribing to the wrong `heading_imu_topic`.
 
 ### CSV does not start
 
