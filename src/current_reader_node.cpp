@@ -82,22 +82,34 @@ bool CurrentReader::connect() {
     last_connect_attempt_ = ros::Time::now().toSec();
     disconnect();
     if (openSerialWithRetries()) {
-        serial_port_.flushInput();
-        connected_ = true;
-        last_error_.clear();
-        publishStatus();
-        return true;
+        try {
+            serial_port_.flushInput();
+            connected_ = true;
+            last_error_.clear();
+            publishStatus();
+            return true;
+        } catch (const std::exception& e) {
+            last_error_ = e.what();
+            ROS_ERROR("Current reader flush failed: %s", e.what());
+            disconnect();
+        }
     }
-    last_error_ = "open failed";
+    if (last_error_.empty())
+        last_error_ = "open failed";
     connected_ = false;
     publishStatus();
     return false;
 }
 
 void CurrentReader::disconnect() {
-    if (serial_port_.isOpen()) {
-        serial_port_.close();
-        ROS_INFO("Current serial port closed");
+    try {
+        if (serial_port_.isOpen()) {
+            serial_port_.close();
+            ROS_INFO("Current serial port closed");
+        }
+    } catch (const std::exception& e) {
+        last_error_ = e.what();
+        ROS_WARN("Current serial port close failed: %s", e.what());
     }
     connected_ = false;
 }
@@ -319,8 +331,10 @@ void CurrentReader::run() {
         int frames_read = 0;
         while (ros::ok() && frames_read < max_frames_per_cycle_) {
             std::vector<float> data;
+            bool has_more_data = false;
             try {
                 data = readFrame();
+                has_more_data = serial_port_.available() > 0;
             } catch (serial::SerialException& e) {
                 last_error_ = e.what();
                 ROS_ERROR("Current reader read failed: %s", e.what());
@@ -337,7 +351,7 @@ void CurrentReader::run() {
             if (!data.empty())
                 publishFrame(data);
             frames_read++;
-            if (serial_port_.available() <= 0)
+            if (!has_more_data)
                 break;
         }
         report();
